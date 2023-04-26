@@ -2,9 +2,10 @@ package jsrest
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
+
+	"github.com/go-resty/resty/v2"
 )
 
 var (
@@ -138,15 +139,15 @@ func ToJSONError(err error) *JSONError {
 	return je
 }
 
-func ReadError(in []byte) error {
+func ReadError(resp *resty.Response) error {
 	jse := &JSONError{}
 
-	err := json.Unmarshal(in, jse)
+	err := json.Unmarshal(resp.Body(), jse)
 	if err == nil {
 		return jse
 	}
 
-	return errors.New(string(in)) //nolint:goerr113
+	return NewHTTPError(resp.StatusCode())
 }
 
 type singleUnwrap interface {
