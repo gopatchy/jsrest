@@ -99,7 +99,7 @@ func WriteError(w http.ResponseWriter, err error) {
 func Errorf(he *HTTPError, format string, a ...any) error {
 	err := fmt.Errorf(format, a...) //nolint:goerr113
 
-	if hasHTTPError(err) {
+	if GetHTTPError(err) != nil {
 		return err
 	}
 
@@ -158,22 +158,23 @@ type multiUnwrap interface {
 	Unwrap() []error
 }
 
-func hasHTTPError(err error) bool {
-	if _, has := err.(*HTTPError); has { //nolint:errorlint
-		return true
+func GetHTTPError(err error) *HTTPError {
+	if hErr, has := err.(*HTTPError); has { //nolint:errorlint
+		return hErr
 	}
 
 	if unwrap, ok := err.(singleUnwrap); ok { //nolint:errorlint
-		return hasHTTPError(unwrap.Unwrap())
+		return GetHTTPError(unwrap.Unwrap())
 	} else if unwrap, ok := err.(multiUnwrap); ok { //nolint:errorlint
 		for _, sub := range unwrap.Unwrap() {
-			if hasHTTPError(sub) {
-				return true
+			hErr := GetHTTPError(sub)
+			if hErr != nil {
+				return hErr
 			}
 		}
 	}
 
-	return false
+	return nil
 }
 
 func (je *JSONError) importError(err error) {
