@@ -159,6 +159,7 @@ type multiUnwrap interface {
 }
 
 func GetHTTPError(err error) *HTTPError {
+	// TODO: Rewrite using errors.As
 	if hErr, has := err.(*HTTPError); has { //nolint:errorlint
 		return hErr
 	}
