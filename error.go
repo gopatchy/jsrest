@@ -2,6 +2,7 @@ package jsrest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -159,20 +160,10 @@ type multiUnwrap interface {
 }
 
 func GetHTTPError(err error) *HTTPError {
-	// TODO: Rewrite using errors.As
-	if hErr, has := err.(*HTTPError); has { //nolint:errorlint
-		return hErr
-	}
+	hErr := &HTTPError{}
 
-	if unwrap, ok := err.(singleUnwrap); ok { //nolint:errorlint
-		return GetHTTPError(unwrap.Unwrap())
-	} else if unwrap, ok := err.(multiUnwrap); ok { //nolint:errorlint
-		for _, sub := range unwrap.Unwrap() {
-			hErr := GetHTTPError(sub)
-			if hErr != nil {
-				return hErr
-			}
-		}
+	if errors.As(err, &hErr) {
+		return hErr
 	}
 
 	return nil
