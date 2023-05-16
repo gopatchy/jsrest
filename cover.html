@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>jsrest: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/gopatchy/jsrest/error.go (61.0%)</option>
+				
+				<option value="file1">github.com/gopatchy/jsrest/json.go (30.8%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package jsrest
+
+import (
+        "encoding/json"
+        "errors"
+        "fmt"
+        "net/http"
+
+        "github.com/go-resty/resty/v2"
+)
+
+var (
+        ErrBadRequest                   = NewHTTPError(http.StatusBadRequest)
+        ErrUnauthorized                 = NewHTTPError(http.StatusUnauthorized)
+        ErrPaymentRequired              = NewHTTPError(http.StatusPaymentRequired)
+        ErrForbidden                    = NewHTTPError(http.StatusForbidden)
+        ErrNotFound                     = NewHTTPError(http.StatusNotFound)
+        ErrMethodNotAllowed             = NewHTTPError(http.StatusMethodNotAllowed)
+        ErrNotAcceptable                = NewHTTPError(http.StatusNotAcceptable)
+        ErrProxyAuthRequired            = NewHTTPError(http.StatusProxyAuthRequired)
+        ErrRequestTimeout               = NewHTTPError(http.StatusRequestTimeout)
+        ErrConflict                     = NewHTTPError(http.StatusConflict)
+        ErrGone                         = NewHTTPError(http.StatusGone)
+        ErrLengthRequired               = NewHTTPError(http.StatusLengthRequired)
+        ErrPreconditionFailed           = NewHTTPError(http.StatusPreconditionFailed)
+        ErrRequestEntityTooLarge        = NewHTTPError(http.StatusRequestEntityTooLarge)
+        ErrRequestURITooLong            = NewHTTPError(http.StatusRequestURITooLong)
+        ErrUnsupportedMediaType         = NewHTTPError(http.StatusUnsupportedMediaType)
+        ErrRequestedRangeNotSatisfiable = NewHTTPError(http.StatusRequestedRangeNotSatisfiable)
+        ErrExpectationFailed            = NewHTTPError(http.StatusExpectationFailed)
+        ErrTeapot                       = NewHTTPError(http.StatusTeapot)
+        ErrMisdirectedRequest           = NewHTTPError(http.StatusMisdirectedRequest)
+        ErrUnprocessableEntity          = NewHTTPError(http.StatusUnprocessableEntity)
+        ErrLocked                       = NewHTTPError(http.StatusLocked)
+        ErrFailedDependency             = NewHTTPError(http.StatusFailedDependency)
+        ErrTooEarly                     = NewHTTPError(http.StatusTooEarly)
+        ErrUpgradeRequired              = NewHTTPError(http.StatusUpgradeRequired)
+        ErrPreconditionRequired         = NewHTTPError(http.StatusPreconditionRequired)
+        ErrTooManyRequests              = NewHTTPError(http.StatusTooManyRequests)
+        ErrRequestHeaderFieldsTooLarge  = NewHTTPError(http.StatusRequestHeaderFieldsTooLarge)
+        ErrUnavailableForLegalReasons   = NewHTTPError(http.StatusUnavailableForLegalReasons)
+
+        ErrInternalServerError           = NewHTTPError(http.StatusInternalServerError)
+        ErrNotImplemented                = NewHTTPError(http.StatusNotImplemented)
+        ErrBadGateway                    = NewHTTPError(http.StatusBadGateway)
+        ErrServiceUnavailable            = NewHTTPError(http.StatusServiceUnavailable)
+        ErrGatewayTimeout                = NewHTTPError(http.StatusGatewayTimeout)
+        ErrHTTPVersionNotSupported       = NewHTTPError(http.StatusHTTPVersionNotSupported)
+        ErrVariantAlsoNegotiates         = NewHTTPError(http.StatusVariantAlsoNegotiates)
+        ErrInsufficientStorage           = NewHTTPError(http.StatusInsufficientStorage)
+        ErrLoopDetected                  = NewHTTPError(http.StatusLoopDetected)
+        ErrNotExtended                   = NewHTTPError(http.StatusNotExtended)
+        ErrNetworkAuthenticationRequired = NewHTTPError(http.StatusNetworkAuthenticationRequired)
+)
+
+type HTTPError struct {
+        Code    int
+        Message string
+}
+
+func NewHTTPError(code int) *HTTPError <span class="cov10" title="40">{
+        return &amp;HTTPError{
+                Code:    code,
+                Message: http.StatusText(code),
+        }
+}</span>
+
+func (err *HTTPError) Error() string <span class="cov2" title="2">{
+        return fmt.Sprintf("[%d] %s", err.Code, err.Message)
+}</span>
+
+type SilentJoinError struct {
+        Wraps []error
+}
+
+func SilentJoin(errs ...error) *SilentJoinError <span class="cov2" title="2">{
+        return &amp;SilentJoinError{
+                Wraps: errs,
+        }
+}</span>
+
+func (err *SilentJoinError) Error() string <span class="cov1" title="1">{
+        return err.Wraps[0].Error()
+}</span>
+
+func (err *SilentJoinError) Unwrap() []error <span class="cov5" title="7">{
+        return err.Wraps
+}</span>
+
+func WriteError(w http.ResponseWriter, err error) <span class="cov0" title="0">{
+        je := ToJSONError(err)
+
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(je.Code)
+
+        enc := json.NewEncoder(w)
+        _ = enc.Encode(je) //nolint:errchkjson
+}</span>
+
+func Errorf(he *HTTPError, format string, a ...any) error <span class="cov3" title="3">{
+        err := fmt.Errorf(format, a...) //nolint:goerr113
+
+        if GetHTTPError(err) != nil </span><span class="cov1" title="1">{
+                return err
+        }</span>
+
+        <span class="cov2" title="2">return SilentJoin(err, he)</span>
+}
+
+type JSONError struct {
+        Code     int      `json:"-"`
+        Messages []string `json:"messages"`
+}
+
+func (je *JSONError) Error() string <span class="cov0" title="0">{
+        if len(je.Messages) &gt; 0 </span><span class="cov0" title="0">{
+                return je.Messages[0]
+        }</span>
+
+        <span class="cov0" title="0">return "no error message"</span>
+}
+
+func (je *JSONError) Unwrap() error <span class="cov0" title="0">{
+        if len(je.Messages) &gt; 1 </span><span class="cov0" title="0">{
+                return &amp;JSONError{
+                        Code:     je.Code,
+                        Messages: je.Messages[1:],
+                }
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func ToJSONError(err error) *JSONError <span class="cov2" title="2">{
+        je := &amp;JSONError{
+                Code: 500,
+        }
+        je.importError(err)
+
+        return je
+}</span>
+
+func ReadError(resp *resty.Response) error <span class="cov0" title="0">{
+        jse := &amp;JSONError{}
+
+        err := json.Unmarshal(resp.Body(), jse)
+        if err == nil </span><span class="cov0" title="0">{
+                return jse
+        }</span>
+
+        <span class="cov0" title="0">return NewHTTPError(resp.StatusCode())</span>
+}
+
+type singleUnwrap interface {
+        Unwrap() error
+}
+
+type multiUnwrap interface {
+        Unwrap() []error
+}
+
+func GetHTTPError(err error) *HTTPError <span class="cov3" title="3">{
+        hErr := &amp;HTTPError{}
+
+        if errors.As(err, &amp;hErr) </span><span class="cov1" title="1">{
+                return hErr
+        }</span>
+
+        <span class="cov2" title="2">return nil</span>
+}
+
+func (je *JSONError) importError(err error) <span class="cov6" title="9">{
+        if he, ok := err.(*HTTPError); ok </span><span class="cov2" title="2">{ //nolint:errorlint
+                je.Code = he.Code
+        }</span>
+
+        <span class="cov6" title="9">if _, is := err.(*SilentJoinError); !is </span><span class="cov5" title="7">{ //nolint:errorlint
+                je.Messages = append(je.Messages, err.Error())
+        }</span>
+
+        <span class="cov6" title="9">if unwrap, ok := err.(singleUnwrap); ok </span><span class="cov1" title="1">{ //nolint:errorlint
+                je.importError(unwrap.Unwrap())
+        }</span> else<span class="cov6" title="8"> if unwrap, ok := err.(multiUnwrap); ok </span><span class="cov3" title="3">{ //nolint:errorlint
+                for _, sub := range unwrap.Unwrap() </span><span class="cov5" title="6">{
+                        je.importError(sub)
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package jsrest
+
+import (
+        "encoding/json"
+        "errors"
+        "net/http"
+
+        "github.com/gopatchy/metadata"
+        "github.com/vfaronov/httpheader"
+)
+
+var ErrUnsupportedContentType = errors.New("unsupported Content-Type")
+
+func Read(r *http.Request, obj any) error <span class="cov10" title="2">{
+        contentType, _ := httpheader.ContentType(r.Header)
+
+        switch contentType </span>{
+        case "":<span class="cov0" title="0">
+                fallthrough</span>
+        case "application/json":<span class="cov10" title="2">
+                break</span>
+
+        default:<span class="cov0" title="0">
+                return Errorf(ErrUnsupportedMediaType, "Content-Type: %s", contentType)</span>
+        }
+
+        <span class="cov10" title="2">dec := json.NewDecoder(r.Body)
+        dec.DisallowUnknownFields()
+
+        err := dec.Decode(obj)
+        if err != nil </span><span class="cov0" title="0">{
+                return Errorf(ErrBadRequest, "decode JSON request body failed (%w)", err)
+        }</span>
+
+        <span class="cov10" title="2">return nil</span>
+}
+
+func Write(w http.ResponseWriter, obj any) error <span class="cov0" title="0">{
+        m := metadata.GetMetadata(obj)
+
+        w.Header().Set("Content-Type", "application/json")
+        httpheader.SetETag(w.Header(), httpheader.EntityTag{Opaque: m.ETag})
+
+        enc := json.NewEncoder(w)
+
+        err := enc.Encode(obj)
+        if err != nil </span><span class="cov0" title="0">{
+                return Errorf(ErrInternalServerError, "encode JSON response failed (%w)", err)
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func WriteList(w http.ResponseWriter, list []any, etag string) error <span class="cov0" title="0">{
+        w.Header().Set("Content-Type", "application/json")
+        httpheader.SetETag(w.Header(), httpheader.EntityTag{Opaque: etag})
+
+        enc := json.NewEncoder(w)
+
+        err := enc.Encode(list)
+        if err != nil </span><span class="cov0" title="0">{
+                return Errorf(ErrInternalServerError, "encode JSON response failed (%w)", err)
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
