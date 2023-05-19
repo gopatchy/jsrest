@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/gopatchy/metadata v0.0.0-20230516044939-eed23a0903d5
-	github.com/stretchr/testify v1.8.2
+	github.com/gopatchy/metadata v0.0.0-20230519040457-7a86a0fb5662
+	github.com/stretchr/testify v1.8.3
 	github.com/vfaronov/httpheader v0.1.0
 	go.uber.org/goleak v1.2.1
 )
